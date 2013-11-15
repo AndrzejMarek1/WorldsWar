@@ -11,7 +11,7 @@ public class Bullet extends Actor{
 	public void act()
 	{
 		super.act();
-		y -= Stage.BULLET_SPEED;
+		y -= Stage.BULLET_SPEED;		
 		if (y < 0)
 			remove();
 	}

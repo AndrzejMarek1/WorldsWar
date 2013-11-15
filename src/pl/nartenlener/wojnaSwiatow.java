@@ -5,20 +5,12 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent; // obs³uga zdarzeñ
-import java.awt.image.BufferedImage;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.*;
-import javax.imageio.*;
 import java.awt.*;
-import java.net.*;
-import java.io.*;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class wojnaSwiatow extends Canvas implements Stage, KeyListener{
 	public long usedTime;
@@ -115,6 +107,30 @@ public class wojnaSwiatow extends Canvas implements Stage, KeyListener{
 		player.act();
 	}
 	
+	public void checkCollisions()
+	{
+		Rectangle playerBounds = player.getBounds();
+		for (int i = 0; i < actors.size(); i++)
+		{
+			Actor a1 = (Actor) actors.get(i);
+			Rectangle r1 = a1.getBounds();
+			if (r1.intersects(playerBounds)) {
+				player.collision(a1);
+				a1.collision(player);
+			}
+			for (int j = i+1; j < actors.size(); j++) 
+			{
+				Actor a2 = (Actor)actors.get(j);
+				Rectangle r2 = a2.getBounds();
+				if (r1.intersects(r2)) 
+				{
+					a1.collision(a2);
+					a2.collision(a1);
+				}
+			}
+		}
+	}
+	
 	public SpriteCache getSpriteCache()
 	{
 		return spriteCache;
@@ -129,6 +145,7 @@ public class wojnaSwiatow extends Canvas implements Stage, KeyListener{
 		{
 			long startTime = System.currentTimeMillis();
 			updateWorld();
+			checkCollisions();
 			paintWindow();
 			usedTime = System.currentTimeMillis()-startTime;
 			

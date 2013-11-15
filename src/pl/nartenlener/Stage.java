@@ -10,6 +10,7 @@ public interface Stage extends ImageObserver{
 	public static final int ODSTEP_Y = 20;
 	public static final int PLAYER_SPEED = 4;
 	public static final int BULLET_SPEED = 10;
+	public static final int BOMB_SPEED = 5;
 	public SpriteCache getSpriteCache();
 	public void addActor(Actor a);
 

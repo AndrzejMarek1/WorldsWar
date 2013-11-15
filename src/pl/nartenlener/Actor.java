@@ -2,6 +2,7 @@ package pl.nartenlener;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
@@ -21,6 +22,13 @@ public class Actor {
 		spriteCache = stage.getSpriteCache();
 		currentFrame = 0;
 	}
+	
+	public Rectangle getBounds() //zwracanie brzegów prostokata
+	{
+		return new Rectangle(x,y,width,height);
+	}
+	
+	public void collision(Actor a) { }
 
 	public void paint(Graphics2D g)
 	{

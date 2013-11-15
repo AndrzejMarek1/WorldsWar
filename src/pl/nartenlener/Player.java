@@ -6,11 +6,28 @@ public class Player extends Actor{
 	protected int vx;
 	protected int vy;
 	private boolean up, down, left, right;
+	private static int clusterBombs = 5; //domyœlna wartoœæ bomb
 
 	public Player(Stage stage) {
 		super(stage);
 		String adresStatku = "grafika\\statek.png";
 		setSpriteName(adresStatku);
+	}
+	
+	public void fireCluster()
+	{
+		if (clusterBombs == 0)
+			return;
+		
+		clusterBombs--;
+		stage.addActor( new Bomb(stage, Bomb.UP_LEFT, x,y));
+		stage.addActor( new Bomb(stage, Bomb.UP,x,y));
+		stage.addActor( new Bomb(stage, Bomb.UP_RIGHT,x,y));
+		stage.addActor( new Bomb(stage, Bomb.LEFT,x,y));
+		stage.addActor( new Bomb(stage, Bomb.RIGHT,x,y));
+		stage.addActor( new Bomb(stage, Bomb.DOWN_LEFT,x,y));
+		stage.addActor( new Bomb(stage, Bomb.DOWN,x,y));
+		stage.addActor( new Bomb(stage, Bomb.DOWN_RIGHT,x,y));
 	}
 	
 	public void act()
@@ -58,6 +75,7 @@ public class Player extends Actor{
 		case KeyEvent.VK_RIGHT : right = true; break;
 		case KeyEvent.VK_DOWN : down = true;break;
 		case KeyEvent.VK_SPACE :fire(); break;
+		case KeyEvent.VK_B : fireCluster(); break;
 		}
 		updateSpeed();
 	}
@@ -86,5 +104,4 @@ public class Player extends Actor{
 		this.vy = vy;
 	}
 	
-
 }

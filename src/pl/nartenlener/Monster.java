@@ -10,6 +10,12 @@ public class Monster extends Actor{
 		setSpriteName(adres);
 	}
 	
+	public void collision(Actor a)
+	{
+		if (a instanceof Bullet || a instanceof Bomb)
+			remove();
+	}
+	
 	public void act()
 	{
 		x = x + vX;

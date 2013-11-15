@@ -2,6 +2,7 @@ package pl.nartenlener;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class Actor {
@@ -11,6 +12,7 @@ public class Actor {
 	protected Stage stage;
 	protected SpriteCache spriteCache;
 	protected int currentFrame;
+	protected boolean markedForRemoval;
 	
 	
 	public Actor(Stage stage)
@@ -23,6 +25,16 @@ public class Actor {
 	public void paint(Graphics2D g)
 	{
 		g.drawImage(spriteCache.getSprite(spriteName), x, y, stage);
+	}
+	
+	public void remove()
+	{
+		markedForRemoval = true;
+	}
+	
+	public boolean isMarkedForRemoval()
+	{
+		return markedForRemoval;
 	}
 
 	public int getX() {

@@ -2,6 +2,8 @@ package pl.nartenlener;
 
 import java.awt.Canvas;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
@@ -18,13 +20,13 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class wojnaSwiatow extends Canvas implements Stage{
+public class wojnaSwiatow extends Canvas implements Stage, KeyListener{
 	public long usedTime;
 	public BufferStrategy strategia;
 	private SpriteCache spriteCache;
 	private ArrayList actors;
 	
-	private Actor player;
+	private Player player;
 	
 	public wojnaSwiatow() {
 		spriteCache = new SpriteCache();		
@@ -48,6 +50,8 @@ public class wojnaSwiatow extends Canvas implements Stage{
 		createBufferStrategy(2);
 		strategia = getBufferStrategy();
 		requestFocus();
+		
+		addKeyListener(this); // inicjacja listenera klawiatury
 	}
 	
 	public void initWorld()
@@ -94,12 +98,20 @@ public class wojnaSwiatow extends Canvas implements Stage{
 	
 	public void updateWorld() // Odswiezanie swiata
 	{
-		for (int i = 0; i < actors.size(); i++)
+		int i = 0;
+		while (i < actors.size())
 		{
-			Actor m = (Actor)actors.get(i);
-			m.act();
+			Actor m = (Actor) actors.get(i);
+			if (m.isMarkedForRemoval())
+			{
+				actors.remove(i);
+			} 
+			else
+			{
+				m.act();
+				i++;
+			}
 		}
-		
 		player.act();
 	}
 	
@@ -133,6 +145,29 @@ public class wojnaSwiatow extends Canvas implements Stage{
 		wojnaSwiatow inv = new wojnaSwiatow();
 		inv.game();
 
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		player.keyPressed(e);
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		player.keyReleased(e);
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	@Override
+	public void addActor(Actor a) {
+		actors.add(a);
 	}
 
 }

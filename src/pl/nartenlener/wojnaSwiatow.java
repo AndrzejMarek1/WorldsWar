@@ -1,6 +1,7 @@
 package pl.nartenlener;
 
 import java.awt.Canvas;
+import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
@@ -14,33 +15,25 @@ import java.awt.*;
 import java.net.*;
 import java.io.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class wojnaSwiatow extends Canvas{
-	public static final int SZEROKOSC = 800;
-	public static final int WYSOKOSC = 600;
-	public static final int SZYBKOSC = 60;
+public class wojnaSwiatow extends Canvas implements Stage{
 	public long usedTime;
-	public HashMap sprites;
-	public int pozX, pozY, vX;
 	public BufferStrategy strategia;
+	private SpriteCache spriteCache;
+	private ArrayList actors;
 	
 	public wojnaSwiatow() {
-		
-		pozX = SZEROKOSC/2;
-		pozY = WYSOKOSC/2;
-		vX = 2; //szybkoœæ odbijania siê potworka
-		
-		sprites = new HashMap();
-		
+		spriteCache = new SpriteCache();		
 		JFrame okno = new JFrame(".: Wojna Œwiatów :.");
 		JPanel panel = (JPanel) okno.getContentPane();
-		setBounds(0, 0, SZEROKOSC, WYSOKOSC);
-		panel.setPreferredSize(new Dimension(SZEROKOSC, WYSOKOSC));
+		setBounds(0, 0, Stage.SZEROKOSC, Stage.WYSOKOSC);
+		panel.setPreferredSize(new Dimension(Stage.SZEROKOSC, Stage.WYSOKOSC));
 		panel.setLayout(null);
 		panel.add(this);
 		
-		okno.setBounds(0, 0, SZEROKOSC, WYSOKOSC);
+		okno.setBounds(0, 0, Stage.SZEROKOSC, Stage.WYSOKOSC);
 		okno.setVisible(true);
 		okno.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -55,14 +48,29 @@ public class wojnaSwiatow extends Canvas{
 		requestFocus();
 	}
 	
+	public void initWorld()
+	{
+		actors = new ArrayList();
+		for (int i = 0; i < Stage.ILOSC_POTWOROW; i++)
+		{
+			Monster m = new Monster(this);
+			m.setX((int) (Math.random()*Stage.SZEROKOSC));
+			m.setY(i * Stage.ODSTEP_Y);
+			m.setvX((int) ((Math.random()*3)+1));
+			actors.add(m);
+		}
+	}
+	
 	public void paintWindow() //rysowanie obiektów na panelu
 	{
-		String adres = "D:\\Eclipse\\Dokumenty\\WojnaSwiatow\\grafika\\Potwor.png";
-		
-		Graphics g = strategia.getDrawGraphics();
+		Graphics2D g = (Graphics2D) strategia.getDrawGraphics();
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, getWidth(), getHeight()); // czyszczenie okna
-		g.drawImage(getSprite(adres), pozX, pozY,this); //rysowanie obrazka
+		for (int i = 0; i < actors.size(); i++)
+		{
+			Actor m = (Actor) actors.get(i);
+			m.paint(g);
+		}
 		
 		g.setColor(Color.WHITE);
 		if (usedTime > 0) // Wyœwiatlanie Stringa z FPS
@@ -76,44 +84,24 @@ public class wojnaSwiatow extends Canvas{
 		strategia.show();
 	}
 	
-	public BufferedImage loadImage(String sciezka)
-	{
-		File imgFile = new File(sciezka);
-		try {
-			//url = this.getClass().getResource("D://Eclipse//Dokumenty//WojnaSwiatow//grafika//Potwor.gif");
-			return ImageIO.read(imgFile);
-		} catch (Exception e) {
-			System.out.println("Przy otwieraniu " + sciezka + " jako " + imgFile.getPath());
-			System.out.println("Wyst¹pi³ b³¹d: " + e.getClass().getName() + " " + e.getMessage());
-			System.exit(0);
-			return null;
-		}
-	}
-	
-	public BufferedImage getSprite(String sciezka) 
-	{
-		BufferedImage img = (BufferedImage) sprites.get(sciezka);
-		if (img == null)
-		{
-			img = loadImage(sciezka);
-			sprites.put(sciezka, img);
-		}
-		
-		return img;
-	}
-	
 	public void updateWorld() // Odswiezanie swiata
 	{
-		pozX = pozX + vX;
-		if (pozX < 0 || pozX > SZEROKOSC)
+		for (int i = 0; i < actors.size(); i++)
 		{
-			vX = -vX;
+			Actor m = (Actor)actors.get(i);
+			m.act();
 		}
+	}
+	
+	public SpriteCache getSpriteCache()
+	{
+		return spriteCache;
 	}
 	
 	public void game()
 	{
 		usedTime = 1000;
+		initWorld();
 		
 		while (isVisible()) // pêtla rysuj¹ca nowe potwory
 		{
@@ -123,7 +111,7 @@ public class wojnaSwiatow extends Canvas{
 			usedTime = System.currentTimeMillis()-startTime;
 			
 			try {
-				Thread.sleep(SZYBKOSC);
+				Thread.sleep(Stage.SZYBKOSC);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

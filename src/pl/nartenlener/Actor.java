@@ -10,11 +10,14 @@ public class Actor {
 	protected String spriteName;
 	protected Stage stage;
 	protected SpriteCache spriteCache;
+	protected int currentFrame;
+	
 	
 	public Actor(Stage stage)
 	{
 		this.stage = stage;
 		spriteCache = stage.getSpriteCache();
+		currentFrame = 0;
 	}
 
 	public void paint(Graphics2D g)

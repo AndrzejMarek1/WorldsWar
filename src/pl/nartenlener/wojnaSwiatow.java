@@ -24,6 +24,8 @@ public class wojnaSwiatow extends Canvas implements Stage{
 	private SpriteCache spriteCache;
 	private ArrayList actors;
 	
+	private Actor player;
+	
 	public wojnaSwiatow() {
 		spriteCache = new SpriteCache();		
 		JFrame okno = new JFrame(".: Wojna Œwiatów :.");
@@ -59,6 +61,10 @@ public class wojnaSwiatow extends Canvas implements Stage{
 			m.setvX((int) ((Math.random()*3)+1));
 			actors.add(m);
 		}
+		
+		player = new Player(this);
+		player.setX(Stage.SZEROKOSC/2);
+		player.setY(Stage.WYSOKOSC - 2*player.getHeight());
 	}
 	
 	public void paintWindow() //rysowanie obiektów na panelu
@@ -71,6 +77,8 @@ public class wojnaSwiatow extends Canvas implements Stage{
 			Actor m = (Actor) actors.get(i);
 			m.paint(g);
 		}
+		
+		player.paint(g);
 		
 		g.setColor(Color.WHITE);
 		if (usedTime > 0) // Wyœwiatlanie Stringa z FPS
@@ -91,6 +99,8 @@ public class wojnaSwiatow extends Canvas implements Stage{
 			Actor m = (Actor)actors.get(i);
 			m.act();
 		}
+		
+		player.act();
 	}
 	
 	public SpriteCache getSpriteCache()

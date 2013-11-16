@@ -17,6 +17,7 @@ public class wojnaSwiatow extends Canvas implements Stage, KeyListener{
 	public BufferStrategy strategia;
 	private SpriteCache spriteCache;
 	private ArrayList actors;
+	private String zmiennaTestowa = "Zmienna testowa, któr¹ trzeba usun¹æ";
 	
 	private Player player;
 	
